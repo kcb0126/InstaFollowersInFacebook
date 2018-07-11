@@ -5,7 +5,7 @@
     <Setting Name="UserId" Type="System.String" Scope="Application">
       <Value Profile="(Default)">kcb0126</Value>
     </Setting>
-    <Setting Name="Password" Type="System.Int32" Scope="Application">
+    <Setting Name="Password" Type="System.String" Scope="Application">
       <Value Profile="(Default)">123456</Value>
     </Setting>
   </Settings>
