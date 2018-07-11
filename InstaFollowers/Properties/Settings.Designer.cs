@@ -25,19 +25,80 @@ namespace InstaFollowers.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("kcb0126")]
-        public string UserId {
+        [global::System.Configuration.DefaultSettingValueAttribute("zozo999854")]
+        public string InstaUsername {
             get {
-                return ((string)(this["UserId"]));
+                return ((string)(this["InstaUsername"]));
             }
         }
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("123456")]
-        public string Password {
+        [global::System.Configuration.DefaultSettingValueAttribute("zozo99")]
+        public string InstaPassword {
             get {
-                return ((string)(this["Password"]));
+                return ((string)(this["InstaPassword"]));
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Instagram 27.0.0.7.97 Android (15/4.0.4; 318dpi; 1280x768; lge; LG-F180L; geeb; g" +
+            "ee; en_US)")]
+        public string UserAgent {
+            get {
+                return ((string)(this["UserAgent"]));
+            }
+            set {
+                this["UserAgent"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("db1c9307-90a9-9e12-f49d-8959a5434b4d")]
+        public string GUID {
+            get {
+                return ((string)(this["GUID"]));
+            }
+            set {
+                this["GUID"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("android-7fc57406822ec2d4")]
+        public string AndroidDeviceID {
+            get {
+                return ((string)(this["AndroidDeviceID"]));
+            }
+            set {
+                this["AndroidDeviceID"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1886cc6b-9d2a-443e-4972-3bded80fb15c")]
+        public string PhoneID {
+            get {
+                return ((string)(this["PhoneID"]));
+            }
+            set {
+                this["PhoneID"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("109513c04303341a7daf27bb41b268e633b30dcc65a3fe14503f743176113869")]
+        public string InstaHashKey {
+            get {
+                return ((string)(this["InstaHashKey"]));
+            }
+            set {
+                this["InstaHashKey"] = value;
             }
         }
     }

@@ -7,6 +7,23 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Label Grid.Column="0">Username:</Label>
+            <Label Grid.Column="1" Foreground="Gray">@</Label>
+            <TextBox Grid.Column="2" x:Name="txtUsername" IsEnabled="False"></TextBox>
+            <Button Grid.Column="3" x:Name="btnStart" Click="btnStart_Click" Padding="5 0 5 0">Start</Button>
+            <Button Grid.Column="4" x:Name="btnSearch" Click="btnSearch_Click" Padding="5 0 5 0" IsEnabled="False">Search Followers</Button>
+        </Grid>
     </Grid>
 </Window>

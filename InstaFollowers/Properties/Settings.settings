@@ -2,11 +2,26 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="InstaFollowers.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="UserId" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">kcb0126</Value>
+    <Setting Name="InstaUsername" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">zozo999854</Value>
     </Setting>
-    <Setting Name="Password" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">123456</Value>
+    <Setting Name="InstaPassword" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">zozo99</Value>
+    </Setting>
+    <Setting Name="UserAgent" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Instagram 27.0.0.7.97 Android (15/4.0.4; 318dpi; 1280x768; lge; LG-F180L; geeb; gee; en_US)</Value>
+    </Setting>
+    <Setting Name="GUID" Type="System.String" Scope="User">
+      <Value Profile="(Default)">db1c9307-90a9-9e12-f49d-8959a5434b4d</Value>
+    </Setting>
+    <Setting Name="AndroidDeviceID" Type="System.String" Scope="User">
+      <Value Profile="(Default)">android-7fc57406822ec2d4</Value>
+    </Setting>
+    <Setting Name="PhoneID" Type="System.String" Scope="User">
+      <Value Profile="(Default)">1886cc6b-9d2a-443e-4972-3bded80fb15c</Value>
+    </Setting>
+    <Setting Name="InstaHashKey" Type="System.String" Scope="User">
+      <Value Profile="(Default)">109513c04303341a7daf27bb41b268e633b30dcc65a3fe14503f743176113869</Value>
     </Setting>
   </Settings>
 </SettingsFile>

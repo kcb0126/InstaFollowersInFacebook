@@ -1,4 +1,5 @@
-﻿using System;
+﻿using InstaFollowers.InstaKits;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,26 @@ namespace InstaFollowers
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private async void btnStart_Click(object sender, RoutedEventArgs e)
+        {
+            string errMsg = await InstaManager.Instance.LoginAccount();
+            if(errMsg != null)
+            {
+                MessageBox.Show(errMsg);
+                this.Close();
+            }
+            else
+            {
+                txtUsername.IsEnabled = true;
+                btnSearch.IsEnabled = true;
+            }
+        }
+
+        private void btnSearch_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
