@@ -35,7 +35,7 @@ namespace InstaFollowers.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("123456")]
-        public int Password {
+        public string Password {
             get {
                 return ((int)(this["Password"]));
             }
