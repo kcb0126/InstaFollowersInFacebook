@@ -67,7 +67,10 @@
     </Compile>
     <Compile Include="InstaKits\InstaApiLoginPostData.cs" />
     <Compile Include="InstaKits\InstaApiLoginResult.cs" />
+    <Compile Include="InstaKits\InstaApiSearchUsersResult.cs" />
     <Compile Include="InstaKits\InstaApiUser.cs" />
+    <Compile Include="InstaKits\InstaApiUserFollowersResult.cs" />
+    <Compile Include="InstaKits\InstaApiUserInfoResult.cs" />
     <Compile Include="InstaKits\InstaEncryption.cs" />
     <Compile Include="InstaKits\InstaManager.cs" />
     <Compile Include="Views\MainWindow.xaml.cs">

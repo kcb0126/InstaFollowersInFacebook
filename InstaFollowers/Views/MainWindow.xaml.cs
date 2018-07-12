@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -36,14 +37,28 @@ namespace InstaFollowers
             }
             else
             {
+                btnStart.IsEnabled = false;
                 txtUsername.IsEnabled = true;
                 btnSearch.IsEnabled = true;
             }
         }
 
-        private void btnSearch_Click(object sender, RoutedEventArgs e)
+        private async void btnSearch_Click(object sender, RoutedEventArgs e)
         {
-
+            string username = txtUsername.Text;
+            long user_id = await InstaManager.Instance.SearchUser(username);
+            if(user_id == -1)
+            {
+                MessageBox.Show("There aren't any user who has that username.");
+            }
+            else
+            {
+                var followers = await InstaManager.Instance.FollowersList(user_id, 500);
+                foreach(var follower in followers)
+                {
+                    var emails = InstaManager.Instance.UserEmails(follower);
+                }
+            }
         }
     }
 }
