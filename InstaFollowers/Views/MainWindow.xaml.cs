@@ -54,9 +54,10 @@ namespace InstaFollowers
             else
             {
                 var followers = await InstaManager.Instance.FollowersList(user_id, 500);
+                var emails = new List<string>();
                 foreach(var follower in followers)
                 {
-                    var emails = InstaManager.Instance.UserEmails(follower);
+                    emails.AddRange(InstaManager.Instance.UserEmails(follower));
                 }
             }
         }

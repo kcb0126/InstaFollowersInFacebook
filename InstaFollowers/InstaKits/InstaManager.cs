@@ -21,6 +21,8 @@ namespace InstaFollowers.InstaKits
         private const string strApiNextFollowerList = strApiURL + "friendships/{0}/followers/?max_id={1}";
         private const string strApiUserInfo = strApiURL + "users/{0}/info/";
 
+        private const string strPageUserInfo = "https://instagram.com/{0}/";
+
         public static InstaManager Instance
         {
             get
@@ -116,7 +118,8 @@ namespace InstaFollowers.InstaKits
                 return null;
             }
         }
-
+        private static int total = 0;
+        private static int totalUser = 0;
         /// <summary>
         /// search instagram user by username and return user_id
         /// </summary>
@@ -148,14 +151,52 @@ namespace InstaFollowers.InstaKits
             return -1;
         }
 
-        public async Task<List<string>> UserEmails(long user_id)
+        public List<string> UserEmails(string username)
         {
             _mutex.WaitOne();
 
+            List<string> emails = new List<string>();
+
+            string htmlContent;
+
+            try
+            {
+                htmlContent = new WebClient().DownloadString(string.Format(strPageUserInfo, username));
+            }
+            catch
+            {
+                return emails;
+            }
+            int pos1 = htmlContent.IndexOf("{\"biography\":\"");
+            htmlContent = htmlContent.Substring(pos1 + 13);
+            int pos2 = htmlContent.IndexOf('"', 1);
+            var biography = htmlContent.Substring(0, pos2);
+
+            Regex emailRegex = new Regex(@"\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*", RegexOptions.IgnoreCase);
+            MatchCollection emailMatches = emailRegex.Matches(biography);
+            foreach (Match match in emailMatches)
+            {
+                emails.Add(match.Value);
+                total++;
+            }
+
+            _mutex.ReleaseMutex();
+            return emails;
+        }
+
+        public async Task<List<string>> UserEmailss(long user_id)
+        {
+            _mutex.WaitOne();
+            totalUser++;
             HttpResponseMessage response = await _httpClient.GetAsync(string.Format(strApiUserInfo, user_id));
 
             string strContent = await response.Content.ReadAsStringAsync();
             InstaApiUserInfoResult userInfoResult = JsonConvert.DeserializeObject<InstaApiUserInfoResult>(strContent);
+
+            if(userInfoResult.status != "ok")
+            {
+                int notused = 0;
+            }
 
             List<string> emails = new List<string>();
             Regex emailRegex = new Regex(@"\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*", RegexOptions.IgnoreCase);
@@ -163,14 +204,14 @@ namespace InstaFollowers.InstaKits
             foreach (Match match in emailMatches)
             {
                 emails.Add(match.Value);
-                System.Diagnostics.Debug.WriteLine(match.Value);
+                total++;
             }
 
             _mutex.ReleaseMutex();
             return emails;
         }
 
-        public async Task<List<long>> FollowersList(long user_id, long at_least = -1)
+        public async Task<List<string>> FollowersList(long user_id, long at_least = -1)
         {
             _mutex.WaitOne();
 
@@ -179,12 +220,12 @@ namespace InstaFollowers.InstaKits
             string strContent = await response.Content.ReadAsStringAsync();
             InstaApiUserFollowersResult searchResult = JsonConvert.DeserializeObject<InstaApiUserFollowersResult>(strContent);
 
-            List<long> follower_ids = new List<long>();
+            List<string> follower_usernames = new List<string>();
             while(true)
             {
                 foreach(var user in searchResult.users)
                 {
-                    follower_ids.Add(user.pk);
+                    follower_usernames.Add(user.username);
                 }
 
                 if(searchResult.next_max_id == null)
@@ -192,7 +233,7 @@ namespace InstaFollowers.InstaKits
                     break;
                 }
 
-                if (follower_ids.Count > at_least)
+                if (follower_usernames.Count > at_least)
                 {
                     break;
                 }
@@ -205,7 +246,7 @@ namespace InstaFollowers.InstaKits
             }
 
             _mutex.ReleaseMutex();
-            return follower_ids;
+            return follower_usernames;
         }
     }
 }
