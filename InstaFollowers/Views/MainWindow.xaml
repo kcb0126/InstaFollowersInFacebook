@@ -11,19 +11,80 @@
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="100"></ColumnDefinition>
-                <ColumnDefinition Width="Auto"></ColumnDefinition>
-                <ColumnDefinition Width="*"></ColumnDefinition>
-                <ColumnDefinition Width="Auto"></ColumnDefinition>
-                <ColumnDefinition Width="Auto"></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-            <Label Grid.Column="0">Username:</Label>
-            <Label Grid.Column="1" Foreground="Gray">@</Label>
-            <TextBox Grid.Column="2" x:Name="txtUsername" IsEnabled="False"></TextBox>
-            <Button Grid.Column="3" x:Name="btnStart" Click="btnStart_Click" Padding="5 0 5 0">Start</Button>
-            <Button Grid.Column="4" x:Name="btnSearch" Click="btnSearch_Click" Padding="5 0 5 0" IsEnabled="False">Search Followers</Button>
-        </Grid>
+        <Button Grid.Row="0" x:Name="btnStart" Click="btnStart_Click" Padding="5">Start</Button>
+        <TabControl Grid.Row="1" x:Name="tabControl" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsEnabled="False">
+            <TabItem Header="Followers">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Column="0">Username:</Label>
+                        <Label Grid.Column="1" Foreground="Gray">@</Label>
+                        <TextBox Grid.Column="2" x:Name="txtUsername"></TextBox>
+                        <Label Grid.Column="3">Count to search: </Label>
+                        <TextBox Grid.Column="4" x:Name="txtFollowerCount" Width="40">500</TextBox>
+                        <Button Grid.Column="5" x:Name="btnSearchFollowers" Click="btnSearchFollowers_Click" Padding="5 0 5 0">Search Followers</Button>
+                    </Grid>
+                    <DataGrid Grid.Row="1" x:Name="dgFollowers" AutoGenerateColumns="False" IsReadOnly="True">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Binding="{Binding No}" Header="No" Width="40" />
+                            <DataGridTextColumn Binding="{Binding Username}" Header="Username" Width="100" />
+                            <DataGridTextColumn Binding="{Binding FullName}" Header="Full Name" Width="150" />
+                            <DataGridTextColumn Binding="{Binding Email}" Header="Email" Width="200" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <Button Grid.Row="2" x:Name="btnSaveFollowers" Padding="5" Click="btnSaveFollowers_Click">Save</Button>
+                    <Label Grid.Row="3" x:Name="lblFollowersFound">0/0 followers scraped.</Label>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Tags" Margin="-2,-2,-2,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Column="0">hashtag:</Label>
+                        <Label Grid.Column="1">#</Label>
+                        <TextBox Grid.Column="2" x:Name="txtHashTag"></TextBox>
+                        <Label Grid.Column="3">Count to search: </Label>
+                        <TextBox Grid.Column="4" x:Name="txtUploaderCount" Width="40">500</TextBox>
+                        <Button Grid.Column="5" x:Name="btnSearchByTag" Click="btnSearchByTag_Click">Search By Tag</Button>
+                    </Grid>
+                    <DataGrid Grid.Row="1" x:Name="dgUploaders" AutoGenerateColumns="False" IsReadOnly="True">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Binding="{Binding No}" Header="No" Width="40" />
+                            <DataGridTextColumn Binding="{Binding Username}" Header="Username" Width="100" />
+                            <DataGridTextColumn Binding="{Binding FullName}" Header="Full Name" Width="150" />
+                            <DataGridTextColumn Binding="{Binding Email}" Header="Email" Width="200" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <Button Grid.Row="2" x:Name="btnSaveUploaders" Padding="5" Click="btnSaveUploaders_Click">Save</Button>
+                    <Label Grid.Row="3" x:Name="lblUploadersFound">0/0 uploaders scraped.</Label>
+                </Grid>
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>

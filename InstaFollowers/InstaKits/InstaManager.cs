@@ -1,6 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿using InstaFollowers.ViewModels;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -20,6 +23,8 @@ namespace InstaFollowers.InstaKits
         private const string strApiFollowerList = strApiURL + "friendships/{0}/followers/";
         private const string strApiNextFollowerList = strApiURL + "friendships/{0}/followers/?max_id={1}";
         private const string strApiUserInfo = strApiURL + "users/{0}/info/";
+        private const string strApiSearchTaggedMedia = strApiURL + "feed/tag/{0}/?rank_token={1}";
+        private const string strApiNextSearchTaggedMedia = strApiURL + "feed/tag/{0}/?rank_token={1}&max_id={2}";
 
         private const string strPageUserInfo = "https://instagram.com/{0}/";
 
@@ -31,8 +36,6 @@ namespace InstaFollowers.InstaKits
             }
         }
         private static InstaManager _instance = null;
-
-        private static Mutex _mutex = new Mutex();
 
         public InstaManager()
         {
@@ -63,6 +66,15 @@ namespace InstaFollowers.InstaKits
 
         private string _strUserId;
         private string _strCSRFToken;
+        private string _strDs_User_Id;
+
+        private string rank_token
+        {
+            get
+            {
+                return string.Format("{0}_{1}", _strDs_User_Id, Guid.NewGuid().ToString());
+            }
+        }
 
         /// <summary>
         /// Do login asynchronously and return error message.
@@ -71,8 +83,6 @@ namespace InstaFollowers.InstaKits
         /// <returns>Error message. Null if OK.</returns>
         public async Task<string> LoginAccount()
         {
-            _mutex.WaitOne();
-
             InstaApiLoginPostData loginPostData = new InstaApiLoginPostData {
                 username = _strUsername,
                 password = _strPassword,
@@ -96,7 +106,6 @@ namespace InstaFollowers.InstaKits
             if(loginResult.status != "ok")
             {
                 string strMessage = loginResult.message;
-                _mutex.ReleaseMutex();
                 return strMessage;
             }
             else
@@ -112,14 +121,16 @@ namespace InstaFollowers.InstaKits
                         _strCSRFToken = cookie.Value;
                         break;
                     }
+                    else if(cookie.Name == "ds_user_id")
+                    {
+                        _strDs_User_Id = cookie.Value;
+                    }
                 }
 
-                _mutex.ReleaseMutex();
                 return null;
             }
         }
         private static int total = 0;
-        private static int totalUser = 0;
         /// <summary>
         /// search instagram user by username and return user_id
         /// </summary>
@@ -127,8 +138,6 @@ namespace InstaFollowers.InstaKits
         /// <returns>user_id, -1 if not exists</returns>
         public async Task<long> SearchUser(string username)
         {
-            _mutex.WaitOne();
-
             var url = strApiSearchUser + "?query=" + username + "&is_typeahead=true&ig_sig_key_version=4";
             HttpResponseMessage response = await _httpClient.GetAsync(string.Format(strApiSearchUser, username));
 
@@ -141,20 +150,16 @@ namespace InstaFollowers.InstaKits
                 {
                     if(user.username == username)
                     {
-                        _mutex.ReleaseMutex();
                         return user.pk;
                     }
                 }
             }
 
-            _mutex.ReleaseMutex();
             return -1;
         }
 
         public List<string> UserEmails(string username)
         {
-            _mutex.WaitOne();
-
             List<string> emails = new List<string>();
 
             string htmlContent;
@@ -172,6 +177,9 @@ namespace InstaFollowers.InstaKits
             int pos2 = htmlContent.IndexOf('"', 1);
             var biography = htmlContent.Substring(0, pos2);
 
+            Regex escapedChar = new Regex(@"\\u[0-9a-z]{4}");
+            biography = escapedChar.Replace(biography, " ");
+
             Regex emailRegex = new Regex(@"\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*", RegexOptions.IgnoreCase);
             MatchCollection emailMatches = emailRegex.Matches(biography);
             foreach (Match match in emailMatches)
@@ -180,52 +188,21 @@ namespace InstaFollowers.InstaKits
                 total++;
             }
 
-            _mutex.ReleaseMutex();
             return emails;
         }
 
-        public async Task<List<string>> UserEmailss(long user_id)
+        public async Task<int> FollowersList(ObservableCollection<InstaApiUser> followers, long user_id, long at_least = -1)
         {
-            _mutex.WaitOne();
-            totalUser++;
-            HttpResponseMessage response = await _httpClient.GetAsync(string.Format(strApiUserInfo, user_id));
-
-            string strContent = await response.Content.ReadAsStringAsync();
-            InstaApiUserInfoResult userInfoResult = JsonConvert.DeserializeObject<InstaApiUserInfoResult>(strContent);
-
-            if(userInfoResult.status != "ok")
-            {
-                int notused = 0;
-            }
-
-            List<string> emails = new List<string>();
-            Regex emailRegex = new Regex(@"\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*", RegexOptions.IgnoreCase);
-            MatchCollection emailMatches = emailRegex.Matches(userInfoResult.user.biography);
-            foreach (Match match in emailMatches)
-            {
-                emails.Add(match.Value);
-                total++;
-            }
-
-            _mutex.ReleaseMutex();
-            return emails;
-        }
-
-        public async Task<List<string>> FollowersList(long user_id, long at_least = -1)
-        {
-            _mutex.WaitOne();
-
             HttpResponseMessage response = await _httpClient.GetAsync(string.Format(strApiFollowerList, user_id));
 
             string strContent = await response.Content.ReadAsStringAsync();
             InstaApiUserFollowersResult searchResult = JsonConvert.DeserializeObject<InstaApiUserFollowersResult>(strContent);
 
-            List<string> follower_usernames = new List<string>();
             while(true)
             {
                 foreach(var user in searchResult.users)
                 {
-                    follower_usernames.Add(user.username);
+                    followers.Add(user);
                 }
 
                 if(searchResult.next_max_id == null)
@@ -233,7 +210,7 @@ namespace InstaFollowers.InstaKits
                     break;
                 }
 
-                if (follower_usernames.Count > at_least)
+                if (followers.Count > at_least)
                 {
                     break;
                 }
@@ -243,10 +220,60 @@ namespace InstaFollowers.InstaKits
                 response = await _httpClient.GetAsync(string.Format(strApiNextFollowerList, user_id, searchResult.next_max_id));
                 strContent = await response.Content.ReadAsStringAsync();
                 searchResult = JsonConvert.DeserializeObject<InstaApiUserFollowersResult>(strContent);
+
+                if(searchResult.status != "ok")
+                {
+                    int notused = 0;
+                }
             }
 
-            _mutex.ReleaseMutex();
-            return follower_usernames;
+            return 0;
+        }
+
+        public async Task<int> SearchTaggedMediaUploaders(ObservableCollection<InstaApiUser> uploaders, string tag_name, long at_least = -1)
+        {
+            HttpResponseMessage response = await _httpClient.GetAsync(string.Format(strApiSearchTaggedMedia, tag_name, rank_token));
+
+            string strContent = await response.Content.ReadAsStringAsync();
+            InstaApiSearchTaggedMediaResult searchResult = JsonConvert.DeserializeObject<InstaApiSearchTaggedMediaResult>(strContent);
+
+            while(true)
+            {
+                foreach(var item in searchResult.items)
+                {
+                    var isExist = false;
+                    foreach(var old in uploaders)
+                    {
+                        if(old.username == item.user.username)
+                        {
+                            isExist = true;
+                            break;
+                        }
+                    }
+                    if (!isExist)
+                    {
+                        uploaders.Add(item.user);
+                    }
+                }
+
+                if (!searchResult.more_available)
+                {
+                    break;
+                }
+
+                if(uploaders.Count > at_least)
+                {
+                    break;
+                }
+
+                Thread.Sleep(1000);
+
+                response = await _httpClient.GetAsync(string.Format(strApiNextSearchTaggedMedia, tag_name, rank_token, searchResult.next_max_id));
+                strContent = await response.Content.ReadAsStringAsync();
+                searchResult = JsonConvert.DeserializeObject<InstaApiSearchTaggedMediaResult>(strContent);
+            }
+
+            return 0;
         }
     }
 }

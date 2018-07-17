@@ -34,11 +34,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CsvHelper, Version=7.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
+      <HintPath>..\packages\CsvHelper.7.1.1\lib\net45\CsvHelper.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
-      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -71,12 +71,15 @@
     </Compile>
     <Compile Include="InstaKits\InstaApiLoginPostData.cs" />
     <Compile Include="InstaKits\InstaApiLoginResult.cs" />
+    <Compile Include="InstaKits\InstaApiRankedItem.cs" />
+    <Compile Include="InstaKits\InstaApiSearchTaggedMediaResult.cs" />
     <Compile Include="InstaKits\InstaApiSearchUsersResult.cs" />
     <Compile Include="InstaKits\InstaApiUser.cs" />
     <Compile Include="InstaKits\InstaApiUserFollowersResult.cs" />
     <Compile Include="InstaKits\InstaApiUserInfoResult.cs" />
     <Compile Include="InstaKits\InstaEncryption.cs" />
     <Compile Include="InstaKits\InstaManager.cs" />
+    <Compile Include="ViewModels\UserWithEmailViewModel.cs" />
     <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
