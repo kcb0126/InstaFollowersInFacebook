@@ -215,17 +215,27 @@ namespace InstaFollowers.InstaKits
                     break;
                 }
 
-                Thread.Sleep(1000);
-
                 response = await _httpClient.GetAsync(string.Format(strApiNextFollowerList, user_id, searchResult.next_max_id));
                 strContent = await response.Content.ReadAsStringAsync();
                 searchResult = JsonConvert.DeserializeObject<InstaApiUserFollowersResult>(strContent);
 
-                if(searchResult.status != "ok")
+                while(searchResult.status != "ok")
                 {
-                    int notused = 0;
+                    Thread.Sleep(60000);
+                    response = await _httpClient.GetAsync(string.Format(strApiNextFollowerList, user_id, searchResult.next_max_id));
+                    strContent = await response.Content.ReadAsStringAsync();
+                    searchResult = JsonConvert.DeserializeObject<InstaApiUserFollowersResult>(strContent);
                 }
             }
+
+            return 0;
+        }
+
+        public async Task<int> TestUserInfo()
+        {
+            HttpResponseMessage response = await _httpClient.GetAsync(string.Format(strApiUserInfo, "shopbellaandbloom"));
+            string strContent = await response.Content.ReadAsStringAsync();
+            
 
             return 0;
         }
@@ -266,11 +276,17 @@ namespace InstaFollowers.InstaKits
                     break;
                 }
 
-                Thread.Sleep(1000);
-
                 response = await _httpClient.GetAsync(string.Format(strApiNextSearchTaggedMedia, tag_name, rank_token, searchResult.next_max_id));
                 strContent = await response.Content.ReadAsStringAsync();
                 searchResult = JsonConvert.DeserializeObject<InstaApiSearchTaggedMediaResult>(strContent);
+
+                while(searchResult.status != "ok")
+                {
+                    Thread.Sleep(60000);
+                    response = await _httpClient.GetAsync(string.Format(strApiNextSearchTaggedMedia, tag_name, rank_token, searchResult.next_max_id));
+                    strContent = await response.Content.ReadAsStringAsync();
+                    searchResult = JsonConvert.DeserializeObject<InstaApiSearchTaggedMediaResult>(strContent);
+                }
             }
 
             return 0;
